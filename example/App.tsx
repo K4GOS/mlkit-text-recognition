@@ -1,73 +1,74 @@
-import { useEvent } from 'expo';
-import MlkitTextRecognition, { MlkitTextRecognitionView } from 'mlkit-text-recognition';
-import { Button, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { useEvent } from "expo";
+import MlkitTextRecognition, {
+  useTextRecognition,
+} from "mlkit-text-recognition";
+import { useRef } from "react";
+import { Button, Text, View } from "react-native";
+import {
+  Camera,
+  useCameraDevice,
+  useCameraFormat,
+  useCameraPermission,
+  useFrameProcessor,
+} from "react-native-vision-camera";
 
 export default function App() {
-  const onChangePayload = useEvent(MlkitTextRecognition, 'onChange');
+  const onChangePayload = useEvent(MlkitTextRecognition, "onChange");
+
+  const device = useCameraDevice("back");
+  const { hasPermission } = useCameraPermission();
+  const format = useCameraFormat(device, [
+    { videoResolution: "max" },
+    { photoResolution: "max" },
+  ]);
+  const { getTextBlocksFromFrame } = useTextRecognition();
+  // console.log(
+  //   console.log(MlkitTextRecognition.recognizeTextFromFrame("scasc"))
+  // );
+
+  const frameProcessor = useFrameProcessor((frame) => {
+    "worklet";
+    const text = getTextBlocksFromFrame(frame);
+    console.log(text);
+  }, []);
+
+  const cameraRef = useRef<Camera>(null);
+
+  const takePhoto = async () => {
+    const file = await cameraRef.current?.takePhoto();
+    if (file) {
+      // const res = MlkitTextRecognition.recognizeTextFromUri(file.path);
+      // console.log(res);
+    }
+  };
+
+  // if (!hasPermission) return <Text>No permission</Text>;
+  if (device == null) return <Text>No device</Text>;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.container}>
-        <Text style={styles.header}>Module API Example</Text>
-        <Group name="Constants">
-          <Text>{MlkitTextRecognition.PI}</Text>
-        </Group>
-        <Group name="Functions">
-          <Text>{MlkitTextRecognition.hello()}</Text>
-        </Group>
-        <Group name="Async functions">
-          <Button
-            title="Set value"
-            onPress={async () => {
-              await MlkitTextRecognition.setValueAsync('Hello from JS!');
-            }}
-          />
-        </Group>
-        <Group name="Events">
-          <Text>{onChangePayload?.value}</Text>
-        </Group>
-        <Group name="Views">
-          <MlkitTextRecognitionView
-            url="https://www.example.com"
-            onLoad={({ nativeEvent: { url } }) => console.log(`Loaded: ${url}`)}
-            style={styles.view}
-          />
-        </Group>
-      </ScrollView>
-    </SafeAreaView>
+    <>
+      <Camera
+        style={{ flex: 1 }}
+        ref={cameraRef}
+        device={device}
+        frameProcessor={frameProcessor}
+        format={format}
+        focusable
+        isActive
+        photo
+        pixelFormat="yuv"
+        fps={format?.maxFps || 30}
+      />
+      <View
+        style={{
+          position: "absolute",
+          bottom: 50,
+          width: 100,
+          alignSelf: "center",
+        }}
+      >
+        <Button title="Start" onPress={takePhoto} />
+      </View>
+    </>
   );
 }
-
-function Group(props: { name: string; children: React.ReactNode }) {
-  return (
-    <View style={styles.group}>
-      <Text style={styles.groupHeader}>{props.name}</Text>
-      {props.children}
-    </View>
-  );
-}
-
-const styles = {
-  header: {
-    fontSize: 30,
-    margin: 20,
-  },
-  groupHeader: {
-    fontSize: 20,
-    marginBottom: 20,
-  },
-  group: {
-    margin: 20,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#eee',
-  },
-  view: {
-    flex: 1,
-    height: 200,
-  },
-};

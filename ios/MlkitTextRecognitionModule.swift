@@ -34,15 +34,15 @@ public class MlkitTextRecognitionModule: Module {
 
     // Enables the module to be used as a native view. Definition components that are accepted as part of the
     // view definition: Prop, Events.
-    View(MlkitTextRecognitionView.self) {
-      // Defines a setter for the `url` prop.
-      Prop("url") { (view: MlkitTextRecognitionView, url: URL) in
-        if view.webView.url != url {
-          view.webView.load(URLRequest(url: url))
-        }
-      }
+    // View(MlkitTextRecognitionView.self) {
+    //   // Defines a setter for the `url` prop.
+    //   Prop("url") { (view: MlkitTextRecognitionView, url: URL) in
+    //     if view.webView.url != url {
+    //       view.webView.load(URLRequest(url: url))
+    //     }
+    //   }
 
-      Events("onLoad")
-    }
+    //   Events("onLoad")
+    // }
   }
 }
