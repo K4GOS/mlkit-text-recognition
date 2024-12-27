@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "mlkit-text-recognition": ["../src/index"],
+      "mlkit-text-recognition/*": ["../src/*"]
+    }
+  }
+}
