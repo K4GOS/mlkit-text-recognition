@@ -1,8 +1,23 @@
 package expo.modules.mlkittextrecognition
 
+import android.graphics.BitmapFactory
+import android.util.Log
+import com.google.android.gms.tasks.Tasks
+import com.google.mlkit.common.model.DownloadConditions
+import com.google.mlkit.common.model.RemoteModelManager
+import com.google.mlkit.nl.translate.TranslateLanguage
+import com.google.mlkit.nl.translate.TranslateRemoteModel
+import com.google.mlkit.nl.translate.Translation
+import com.google.mlkit.nl.translate.TranslatorOptions
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
 import com.mrousavy.camera.frameprocessors.FrameProcessorPluginRegistry
+import expo.modules.core.interfaces.Arguments
+import expo.modules.kotlin.Promise
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
+import java.io.File
 import java.net.URL
 
 class MlkitTextRecognitionModule : Module() {
@@ -32,6 +47,67 @@ class MlkitTextRecognitionModule : Module() {
     Function("hello") {
       "Hello world! 👋"
     }
+
+    Function("recognizeTextFromUri") { uri:String ->
+      val file = File(uri)
+      if (!file.exists()) {
+        throw Exception("File not found at: $uri")
+      }
+
+      // Load the image from the URI
+      val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+      val inputImage = InputImage.fromBitmap(bitmap, 0)
+
+      // Perform text recognition
+      val recognizer = TextRecognition.getClient(JapaneseTextRecognizerOptions.Builder().build())
+      val visionText = try {
+        Tasks.await(recognizer.process(inputImage))
+      } catch (e: Exception) {
+        throw Exception("Text recognition failed: ${e.message}")
+      }
+      val res = ArrayList<String>()
+      visionText.textBlocks.forEach{textBlock -> res.add(textBlock.text.lines().joinToString(""))}
+      res
+    }
+
+    AsyncFunction("translateJapaneseText") { japaneseText: String, targetLanguage: String, promise: Promise ->
+      val options = TranslatorOptions.Builder()
+        .setSourceLanguage(TranslateLanguage.JAPANESE)
+        .setTargetLanguage(targetLanguage)
+        .build()
+      val japaneseTranslator = Translation.getClient(options)
+
+      val conditions = DownloadConditions.Builder()
+        .requireWifi()
+        .build()
+
+      try {
+        Tasks.await(japaneseTranslator.downloadModelIfNeeded(conditions))
+      } catch (e: Exception) {
+        e.printStackTrace()
+        Log.e("Error","Model has not been downloaded")
+      }
+
+      val result = Tasks.await(japaneseTranslator.translate(japaneseText))
+      promise.resolve(result)
+    }
+
+    AsyncFunction("getDownloadedTranslationModels") { promise: Promise ->
+      val modelManager = RemoteModelManager.getInstance()
+      // Get translation models stored on the device.
+      val models = Tasks.await(modelManager.getDownloadedModels(TranslateRemoteModel::class.java))
+      val modelNames = ArrayList<String>()
+      promise.resolve(modelNames.apply { models.forEach { add(it.language) } })
+    }
+
+    AsyncFunction("uninstallLanguageModel") { targetLanguage: String, promise: Promise ->
+      val modelManager = RemoteModelManager.getInstance()
+      val modelToDelete = TranslateRemoteModel.Builder(targetLanguage).build()
+      Tasks.await(modelManager.deleteDownloadedModel(modelToDelete))
+      promise.resolve("Model for language $targetLanguage has been successfully deleted")
+    }
+
+
 
     // Defines a JavaScript function that always returns a Promise and whose native code
     // is by default dispatched on the different thread than the JavaScript runtime runs on.

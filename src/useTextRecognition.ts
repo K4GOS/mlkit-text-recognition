@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { VisionCameraProxy, type Frame } from "react-native-vision-camera";
+import { TextRecognition } from "./Types";
 
 function createTextRecognitionPlugin(): any {
   const plugin = VisionCameraProxy.initFrameProcessorPlugin(
@@ -18,6 +19,6 @@ function createTextRecognitionPlugin(): any {
   };
 }
 
-export function useTextRecognition(): any {
+export function useTextRecognition(): TextRecognition {
   return useMemo(() => createTextRecognitionPlugin(), []);
 }
