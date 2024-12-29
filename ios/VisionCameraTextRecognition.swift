@@ -18,6 +18,6 @@ public class VisionCameraTextRecognition: FrameProcessorPlugin {
     let buffer = frame.buffer
     let orientation = frame.orientation
     // code goes here
-    return "Hello from swift !"
+    return []
   }
 }

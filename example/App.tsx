@@ -22,7 +22,7 @@ export default function App() {
   const device = useCameraDevice("back");
   const { hasPermission } = useCameraPermission();
   const format = useCameraFormat(device, [
-    { videoResolution: "max" },
+    // { videoResolution: "max" },
     { photoResolution: "max" },
   ]);
 
@@ -32,15 +32,22 @@ export default function App() {
 
   const blocksCoords = useSharedValue<any[]>([]);
   const paint = Skia.Paint();
-  paint.setStyle(PaintStyle.Stroke);
-  paint.setStrokeWidth(5);
+  paint.setStyle(PaintStyle.Fill);
+  // paint.setStrokeWidth(5);
+
+  // const frameProcessor = useSkiaFrameProcessor((frame) => {
+  //   "worklet";
+  //   frame.render();
+  // }, []);
+  // const frameProcessor = useFrameProcessor((frame) => {
+  //   "worklet";
+  // }, []);
 
   const frameProcessor = useSkiaFrameProcessor((frame) => {
     "worklet";
     runAsync(frame, () => {
       "worklet";
       const blocks = getTextBlocksFromFrame(frame);
-
       if (blocks.length > 0) {
         blocksCoords.value = blocks;
       } else {
@@ -48,6 +55,10 @@ export default function App() {
       }
     });
     frame.render();
+    console.log("drawing");
+    paint.setColor(Skia.Color("#f58d42"));
+    const roundedRect = Skia.XYWHRect(110, 1100, 1500, 1500);
+    frame.drawRect(roundedRect, paint);
 
     const BORDER_RADIUS = 15;
     for (const blockCoord of blocksCoords.value) {
@@ -96,12 +107,12 @@ export default function App() {
         style={{ flex: 1 }}
         ref={cameraRef}
         device={device}
-        // frameProcessor={frameProcessor}
+        frameProcessor={frameProcessor}
         format={format}
         isActive
         photo
         pixelFormat="yuv"
-        fps={45}
+        // fps={45}
       />
       <View
         style={{
