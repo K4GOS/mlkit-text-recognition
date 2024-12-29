@@ -11,7 +11,6 @@ import {
   useCameraDevice,
   useCameraFormat,
   useCameraPermission,
-  useFrameProcessor,
   useSkiaFrameProcessor,
 } from "react-native-vision-camera";
 import { useSharedValue } from "react-native-worklets-core";
@@ -21,9 +20,9 @@ export default function App() {
 
   const device = useCameraDevice("back");
   const { hasPermission } = useCameraPermission();
+
   const format = useCameraFormat(device, [
-    // { videoResolution: "max" },
-    { photoResolution: "max" },
+    { photoResolution: { width: 1080, height: 1920 } },
   ]);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -32,16 +31,8 @@ export default function App() {
 
   const blocksCoords = useSharedValue<any[]>([]);
   const paint = Skia.Paint();
-  paint.setStyle(PaintStyle.Fill);
-  // paint.setStrokeWidth(5);
-
-  // const frameProcessor = useSkiaFrameProcessor((frame) => {
-  //   "worklet";
-  //   frame.render();
-  // }, []);
-  // const frameProcessor = useFrameProcessor((frame) => {
-  //   "worklet";
-  // }, []);
+  paint.setStyle(PaintStyle.Stroke);
+  paint.setStrokeWidth(5);
 
   const frameProcessor = useSkiaFrameProcessor((frame) => {
     "worklet";
@@ -55,10 +46,6 @@ export default function App() {
       }
     });
     frame.render();
-    console.log("drawing");
-    paint.setColor(Skia.Color("#f58d42"));
-    const roundedRect = Skia.XYWHRect(110, 1100, 1500, 1500);
-    frame.drawRect(roundedRect, paint);
 
     const BORDER_RADIUS = 15;
     for (const blockCoord of blocksCoords.value) {

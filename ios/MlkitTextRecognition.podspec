@@ -20,6 +20,8 @@ Pod::Spec.new do |s|
 
   s.dependency 'ExpoModulesCore'
   s.dependency 'VisionCamera'
+  s.dependency 'GoogleMLKit/TextRecognitionJapanese'
+
 
   # Swift/Objective-C compatibility
   s.pod_target_xcconfig = {
