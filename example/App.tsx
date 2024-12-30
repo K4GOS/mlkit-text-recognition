@@ -8,6 +8,7 @@ import { Button, Text, View } from "react-native";
 import {
   Camera,
   runAsync,
+  runAtTargetFps,
   useCameraDevice,
   useCameraFormat,
   useCameraPermission,
@@ -36,7 +37,7 @@ export default function App() {
 
   const frameProcessor = useSkiaFrameProcessor((frame) => {
     "worklet";
-    runAsync(frame, () => {
+    runAtTargetFps(1, () => {
       "worklet";
       const blocks = getTextBlocksFromFrame(frame);
       if (blocks.length > 0) {
@@ -71,16 +72,19 @@ export default function App() {
   const takePhoto = async () => {
     const file = await cameraRef.current?.takePhoto();
     // if (file) {
-    //   const res = MlkitTextRecognition.recognizeTextFromUri(file.path);
+    //   const res = MlkitTextRecognition.recognizeTextFromUri(
+    //     file.path.replace("file://", "")
+    //   );
     //   console.log("haha", res);
     // }
     setIsLoading(true);
-    // const res = await MlkitTextRecognition.translateJapaneseText(
-    //   "日本語",
-    //   "fr"
-    // );
-    // const models = await MlkitTextRecognition.getDownloadedTranslationModels();
-    // console.log(models);
+    const res = await MlkitTextRecognition.translateJapaneseText(
+      "私は強すぎる。",
+      "en"
+    );
+    console.log(res);
+    const models = await MlkitTextRecognition.getDownloadedTranslationModels();
+    console.log(models);
 
     setIsLoading(false);
   };
