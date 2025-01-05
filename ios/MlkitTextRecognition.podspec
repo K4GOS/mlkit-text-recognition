@@ -11,8 +11,8 @@ Pod::Spec.new do |s|
   s.author         = package['author']
   s.homepage       = package['homepage']
   s.platforms      = {
-    :ios => '15.1',
-    :tvos => '15.1'
+    :ios => '15.2',
+    :tvos => '15.2'
   }
   s.swift_version  = '5.4'
   s.source         = { git: 'https://github.com/K4GOS/mlkit-text-recognition' }
@@ -20,8 +20,8 @@ Pod::Spec.new do |s|
 
   s.dependency 'ExpoModulesCore'
   s.dependency 'VisionCamera'
-  s.dependency 'GoogleMLKit/TextRecognitionJapanese'
-  s.dependency 'GoogleMLKit/Translate'
+  s.dependency 'GoogleMLKit/TextRecognitionJapanese', '6.0.0'
+  s.dependency 'GoogleMLKit/Translate', '6.0.0'
 
 
   # Swift/Objective-C compatibility
