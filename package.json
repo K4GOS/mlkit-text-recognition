@@ -1,6 +1,6 @@
 {
   "name": "@miwago/mlkit-text-processor",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Use MLKIT to extract text blocks from frames or uri. This module also provides translation capabilities.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
