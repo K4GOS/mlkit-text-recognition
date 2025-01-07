@@ -20,8 +20,8 @@ Pod::Spec.new do |s|
 
   s.dependency 'ExpoModulesCore'
   s.dependency 'VisionCamera'
-  s.dependency 'GoogleMLKit/TextRecognitionJapanese', '6.0.0'
-  s.dependency 'GoogleMLKit/Translate', '6.0.0'
+  s.dependency 'GoogleMLKit/TextRecognitionJapanese', '7.0.0'
+  s.dependency 'GoogleMLKit/Translate', '7.0.0'
 
 
   # Swift/Objective-C compatibility
