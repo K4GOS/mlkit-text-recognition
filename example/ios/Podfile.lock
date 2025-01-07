@@ -88,7 +88,7 @@ PODS:
     - GoogleToolboxForMac/StringEncoding (< 5.0, >= 4.2.1)
     - GTMSessionFetcher/Core (< 4.0, >= 3.3.2)
     - MLKitCommon (~> 11.0)
-  - MlkitTextRecognition (0.1.1):
+  - MlkitTextRecognition (0.1.2):
     - ExpoModulesCore
     - GoogleMLKit/TextRecognitionJapanese (= 6.0.0)
     - GoogleMLKit/Translate (= 6.0.0)
@@ -2039,7 +2039,7 @@ SPEC CHECKSUMS:
   MLImage: 1824212150da33ef225fbd3dc49f184cf611046c
   MLKitCommon: afec63980417d29ffbb4790529a1b0a2291699e1
   MLKitNaturalLanguage: 7cd66a1ec3fbee2ff22890e1d42dda5c928e811b
-  MlkitTextRecognition: b8e8cae7a600b2d63d30c5458078fe9fba10524c
+  MlkitTextRecognition: f2aa1e0d83d68e4f74cc675b369596653957a200
   MLKitTextRecognitionCommon: c0b3a63d529296a19bce1f8bc8a513644ed4d1f6
   MLKitTextRecognitionJapanese: f59521572316562030b20cc98b8e635fc282a172
   MLKitTranslate: a404df6fba19d2ddcbebf4f1fc51d9f5edd24ee5

@@ -40,7 +40,7 @@
             "deploymentTarget": "15.5"
           },
           "android": {
-            "minSdkVersion": "26"
+            "minSdkVersion": 26
           }
         }
       ]
